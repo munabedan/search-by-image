@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--   CORS allow same origin -->
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta http-equiv="Access-Control-Allow-Methods" content="GET, POST, PUT, DELETE, OPTIONS">
+
+
+
+    <title>Document</title>
+</head>
+
+<body>
+    <form>
+        <label for="image-url">Enter an image URL:</label>
+        <input type="text" id="image-url">
+        <button type="button" onclick="searchImage(document.getElementById('image-url').value)">Search</button>
+    </form>
+    <div id="search-results"></div>
+    <script>
+        // Paste the searchImage function here
+        const searchImage = async (imageUrl) => {
+            // Construct the search URL using the provided image URL and the site:aliexpress.com query parameter
+            const searchUrl = `https://www.google.com/searchbyimage?site=search&sa=X&image_url=${imageUrl}&q=site%3Aaliexpress.com`;
+
+            // Fetch the search results HTML
+            const response = await fetch(searchUrl);
+            const html = await response.text();
+
+            // Parse the HTML to extract the search result links
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const links = [...doc.querySelectorAll('.g a')].map(a => a.href);
+
+            // Display the search result links on your website
+            const resultsElement = document.getElementById('search-results');
+            resultsElement.innerHTML = links.map(link => `<a href="${link}" target="_blank">${link}</a>`).join('<br>');
+        };
+
+        // Example usage: call the searchImage function with the image URL entered by the user
+        const imageUrl = prompt('Enter an image URL:');
+        searchImage(imageUrl);
+
+    </script>
+</body>
+
+</html>
